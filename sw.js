@@ -1,5 +1,5 @@
 // Network-first service worker: always tries the latest version, falls back to cache when offline.
-const CACHE = 'puzzle-studio-v12';
+const CACHE = 'puzzle-studio-v13';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
