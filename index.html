@@ -205,13 +205,77 @@ h1{text-align:center;font-size:clamp(34px,7vw,58px);letter-spacing:-.04em;margin
 @media(max-width:620px){#menu{padding:18px 14px 28px}#menu h1{margin:16px 0 7px}.game-tools{position:relative;top:auto;grid-template-columns:1fr;gap:8px;margin:20px auto 10px;padding:9px;border-radius:16px}.game-search{min-height:48px}.game-filters{display:grid;grid-template-columns:repeat(3,1fr)}.filter-chip{padding:8px 5px;font-size:12px}.game-count{text-align:center}.cards{grid-template-columns:1fr;gap:10px;margin:12px auto 22px}.gcard{min-height:88px;padding:13px 14px;border-radius:16px}.gcard .ic{flex-basis:44px;width:44px;height:44px;border-radius:13px}.card-section{padding-top:15px}.daily-card{padding:15px}.settings{justify-content:stretch}.settings label{justify-content:space-between;flex:1 1 100%}.settings label select{min-width:130px}.screen:not(#menu) .top{top:env(safe-area-inset-top);gap:8px}.stats>span{padding:6px 9px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
+<style>
+/* Art direction: warm, playful, and calm across all three themes */
+:root{--accent:#9a84ff;--glow:rgba(121,104,255,.18)}
+:root[data-theme="light"]{--accent:#6b58dc;--glow:rgba(105,88,220,.12)}
+:root[data-theme="ocean"]{--accent:#57c9e7;--glow:rgba(57,190,225,.17)}
+html,body{background-image:radial-gradient(ellipse at 8% 7%,var(--glow),transparent 32%),radial-gradient(ellipse at 92% 28%,color-mix(in srgb,var(--blue) 9%,transparent),transparent 30%),radial-gradient(ellipse at 50% -20%,#29304a 0%,var(--bg) 62%);background-attachment:fixed}
+:root[data-theme="light"] body{background-image:radial-gradient(ellipse at 8% 7%,var(--glow),transparent 34%),radial-gradient(ellipse at 92% 28%,#61a4ef16,transparent 30%),linear-gradient(145deg,#f9faff,var(--bg) 60%)}
+:root[data-theme="ocean"] body{background-image:radial-gradient(ellipse at 8% 7%,var(--glow),transparent 34%),radial-gradient(ellipse at 92% 28%,#41dcbd14,transparent 30%),linear-gradient(145deg,#123c50,var(--bg) 65%)}
+.screen.active{animation:screenArrive .32s ease-out both}
+@keyframes screenArrive{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+#menu.screen.active{display:block}
+.hero-panel{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;min-height:230px;max-width:1040px;margin:0 auto;padding:34px clamp(22px,5vw,54px);overflow:hidden;border:1px solid color-mix(in srgb,var(--accent) 36%,var(--line));border-radius:30px;background:radial-gradient(ellipse at 82% 12%,color-mix(in srgb,var(--accent) 26%,transparent),transparent 34%),linear-gradient(120deg,color-mix(in srgb,var(--panel2) 95%,var(--accent)),var(--panel) 74%);box-shadow:inset 0 1px #ffffff12,0 24px 64px #0003}
+.hero-panel::before{position:absolute;z-index:-1;inset:0;content:"";opacity:.16;background-image:radial-gradient(color-mix(in srgb,var(--text) 65%,transparent) .7px,transparent .7px);background-size:17px 17px;mask-image:linear-gradient(90deg,transparent,black)}
+.hero-copy{position:relative;z-index:2;max-width:650px;text-align:start}
+#menu .eyebrow{display:table;margin:0 0 15px;padding:7px 12px;border:1px solid color-mix(in srgb,var(--accent) 48%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--accent) 13%,var(--panel));color:var(--blue);font-size:11px;letter-spacing:.11em}
+#menu h1{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin:0;font-size:clamp(38px,6vw,62px);letter-spacing:-.055em}
+#menu .brand{flex:0 0 auto;width:60px;height:60px;margin:0;border:1px solid #ffffff38;border-radius:20px;background:linear-gradient(145deg,var(--accent),var(--blue));box-shadow:0 10px 32px color-mix(in srgb,var(--accent) 38%,transparent);font-size:30px}
+#menu .sub{text-align:start;margin:12px 0 0;margin-inline-start:72px;color:var(--muted);font-size:16px}
+.hero-art{position:absolute;inset-inline-end:30px;top:50%;width:235px;height:205px;transform:translateY(-50%);pointer-events:none}
+.hero-orbit{position:absolute;inset:13px 8px 0;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:50%;transform:rotate(-22deg);box-shadow:0 0 55px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 0 35px color-mix(in srgb,var(--accent) 10%,transparent)}
+.hero-piece{position:absolute;z-index:1;display:grid;place-items:center;border:1px solid #ffffff52;background:linear-gradient(145deg,color-mix(in srgb,var(--panel2) 90%,white),var(--panel));box-shadow:0 15px 32px #0004,inset 0 1px #ffffff70}
+.hero-piece-one{top:42px;left:77px;width:92px;height:92px;border-radius:28px;color:#fff;font-size:49px;transform:rotate(-9deg)}
+.hero-piece-two{top:13px;right:22px;width:50px;height:50px;border-radius:17px;color:var(--yellow);font-size:25px;transform:rotate(12deg)}
+.hero-piece-three{bottom:18px;left:33px;width:55px;height:55px;border-radius:19px;color:var(--green);font-size:25px;transform:rotate(14deg)}
+.game-tools{border-color:color-mix(in srgb,var(--accent) 20%,var(--line));box-shadow:0 14px 34px #00000020,inset 0 1px #ffffff10}
+.filter-chip.active{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 70%,var(--blue)),var(--blue));color:#11131d;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 25%,transparent)}
+.cards{gap:13px}
+.gcard{min-height:112px;padding:16px 17px;border-color:color-mix(in srgb,var(--line) 86%,transparent);background:linear-gradient(145deg,color-mix(in srgb,var(--panel2) 86%,transparent),color-mix(in srgb,var(--panel) 96%,transparent));box-shadow:inset 0 1px #ffffff0a,0 9px 26px #0000001a;backdrop-filter:blur(8px)}
+.gcard::after{position:absolute;top:0;inset-inline-start:18px;width:34px;height:2px;border-radius:0 0 5px 5px;background:var(--card-accent,var(--accent));content:"";opacity:.85}
+.gcard .ic{border-color:color-mix(in srgb,var(--card-accent,var(--accent)) 38%,var(--line));background:color-mix(in srgb,var(--card-accent,var(--accent)) 15%,var(--panel));box-shadow:inset 0 1px #ffffff20;color:var(--card-accent,var(--blue));}
+.gcard[data-g="num"],.gcard[data-g="sudoku"],.gcard[data-g="2048"]{--card-accent:#ffbe65}
+.gcard[data-g="photo"],.gcard[data-g="jig"],.gcard[data-g="pipes"]{--card-accent:#63d3df}
+.gcard[data-g="mem"],.gcard[data-g="mastermind"],.gcard[data-g="queens"]{--card-accent:#c2a0ff}
+.gcard[data-g="lights"],.gcard[data-g="minesweeper"],.gcard[data-g="kenken"]{--card-accent:#81d6a6}
+.gcard[data-g="words"],.gcard[data-g="futoshiki"],.gcard[data-g="hitori"]{--card-accent:#f28fa6}
+.gcard[data-g="colorsort"],.gcard[data-g="hanoi"],.gcard[data-g="nonogram"]{--card-accent:#f2a66e}
+.gcard[data-g="unblock"],.gcard[data-g="pegsolitaire"],.gcard[data-g="bridges"],.gcard[data-g="slitherlink"]{--card-accent:#66c4f0}
+.gcard[data-g="ttt"],.gcard[data-g="connect"],.gcard[data-g="dots"],.gcard[data-g="reversi"],.gcard[data-g="gomoku"],.gcard[data-g="checkers"],.gcard[data-g="mancala"]{--card-accent:#ff9d72}
+.gcard:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--card-accent,var(--blue)) 62%,var(--line));box-shadow:0 16px 34px #0003,inset 0 1px #ffffff18}
+.gcard:hover .ic{transform:translateY(-1px) rotate(-4deg);box-shadow:0 8px 20px color-mix(in srgb,var(--card-accent,var(--blue)) 18%,transparent),inset 0 1px #ffffff40}
+.gcard .ic{transition:transform .2s,box-shadow .2s}
+.card-section{display:flex;align-items:center;gap:12px;padding:19px 5px 3px;font-size:15px}
+.card-section::after{height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent);content:""}
+[dir="rtl"] .card-section::after{background:linear-gradient(270deg,var(--line),transparent)}
+.daily-card{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--yellow) 28%,var(--line));background:radial-gradient(ellipse at 85% 10%,color-mix(in srgb,var(--yellow) 18%,transparent),transparent 40%),linear-gradient(120deg,var(--panel),color-mix(in srgb,var(--panel2) 85%,var(--yellow)));box-shadow:0 14px 36px #0002,inset 0 1px #ffffff12}
+.daily-card .btn{border-color:color-mix(in srgb,var(--yellow) 40%,var(--line));background:linear-gradient(135deg,#ffe39a,#f5bd59);color:#2e2412;box-shadow:0 8px 18px #e5ae4040}
+.settings{background:color-mix(in srgb,var(--panel) 90%,transparent);box-shadow:inset 0 1px #ffffff0c,0 14px 34px #0002}
+.screen:not(#menu) .top{box-shadow:0 8px 24px #0002,inset 0 1px #ffffff0d}
+.screen:not(#menu) .top .back{border-color:color-mix(in srgb,var(--accent) 25%,var(--line))}
+.screen:not(#menu) .top h2{letter-spacing:-.02em}
+.stats>span{box-shadow:inset 0 1px #ffffff0a,0 3px 8px #0000000b}
+.controls .btn,.duel-controls .btn{box-shadow:0 4px 12px #00000012}
+.modal{background:rgba(6,9,17,.72);backdrop-filter:blur(8px)}
+.box{border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 58%),var(--panel);box-shadow:0 28px 90px #0009,inset 0 1px #ffffff18}
+.box h2{letter-spacing:-.025em}
+@media(max-width:700px){.hero-panel{min-height:205px;padding:27px 24px;border-radius:24px}.hero-copy{max-width:78%}.hero-art{inset-inline-end:-38px;opacity:.62;transform:translateY(-50%) scale(.78)}#menu h1{font-size:clamp(34px,8vw,48px);gap:9px}#menu .brand{width:50px;height:50px;border-radius:17px;font-size:25px}#menu .sub{margin-inline-start:59px;font-size:14px}.gcard{min-height:105px}}
+@media(max-width:420px){.hero-panel{min-height:185px;padding:22px 17px}.hero-copy{max-width:100%}.hero-art{inset-inline-end:-95px;opacity:.35;transform:translateY(-50%) scale(.72)}#menu .eyebrow{font-size:10px}.gcard small{font-size:11px}.cardmeta{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.screen.active{animation:none}}
+</style>
 </head>
 <body>
 
 <div id="menu" class="screen active">
+  <section class="hero-panel">
+    <div class="hero-copy">
   <p class="eyebrow">A little challenge, every day</p>
   <h1><span class="brand">🧩</span>Puzzle Studio</h1>
   <p class="sub">Think, play, and find your next favorite.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span class="hero-piece hero-piece-one">🧩</span><span class="hero-piece hero-piece-two">✦</span><span class="hero-piece hero-piece-three">◈</span><span class="hero-orbit"></span></div>
+  </section>
   <div class="game-tools" role="search">
     <label class="game-search"><span class="search-icon" aria-hidden="true">⌕</span><input id="gameSearch" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off"></label>
     <div class="game-filters" role="group" aria-label="Filter games">
