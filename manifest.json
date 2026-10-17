@@ -2,13 +2,13 @@
   "id": "./",
   "name": "Puzzle Studio — Brain Games",
   "short_name": "Puzzle Studio",
-  "description": "A free collection of eighteen puzzle games, each with 30 levels, plus a separate daily picture-logic puzzle.",
+  "description": "A free collection of 29 puzzle games, including solo logic challenges and local two-player games, plus a separate daily puzzle.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#11131d",
-  "theme_color": "#11131d",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
   "categories": [
     "games",
     "entertainment"
