@@ -422,6 +422,17 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 #menu .cards.cards-enter .gcard:nth-child(n+9){animation:none!important}
 .daily-card .btn{animation:none!important}
 @media(max-width:700px){#menu .gcard{box-shadow:0 4px 12px #0002!important;background:var(--panel2)!important;contain-intrinsic-size:auto 96px}.hero-piece-two{animation:none!important}.hero-panel,.resume-panel,.settings,.game-tools{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+@media(max-width:700px){#menu .cards{contain:layout style}#menu .gcard{box-shadow:none!important;background:var(--panel2)!important;border-color:var(--line)!important;border-inline-start:3px solid var(--card-accent,var(--blue))!important;transition:none!important;contain:layout style}#menu .gcard .ic{box-shadow:none!important;background:#ffffff0a!important}#menu .hero-panel,#menu .resume-panel,#menu .game-tools{box-shadow:none!important;background:var(--panel)!important}#menu .hero-art{display:none}.game-tools{position:static!important}}
+#menu .cards{content-visibility:auto;contain-intrinsic-size:auto 1500px}
+.screen.game-entering>.top{animation:game-header-in .32s cubic-bezier(.2,.75,.25,1) both}
+.screen.game-entering>.stats{animation:game-content-in .36s .035s cubic-bezier(.2,.75,.25,1) both}
+.screen.game-entering>.hint{animation:game-content-in .36s .06s cubic-bezier(.2,.75,.25,1) both}
+.screen.game-entering>.controls{animation:game-content-in .36s .12s cubic-bezier(.2,.75,.25,1) both}
+.screen.game-entering>:is([role="grid"],.sboard,.cwrap,.mgrid,.color-sort-board,.hanoi-board,.twogrid,.gamegrid,.wsgrid,.sudoku,.kenken-board,.nonogram-board,.unblock-board,.mm-board,.peg-board,.pipe-board,.queen-board,.futo-board,.sl-board,.hitori-board,.bridges-board){animation:game-board-in .46s .07s cubic-bezier(.2,.8,.2,1) both}
+@keyframes game-header-in{from{opacity:0;transform:translate3d(0,-8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes game-content-in{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes game-board-in{from{opacity:0;transform:translate3d(0,12px,0) scale(.985)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.screen.game-entering>.top,.screen.game-entering>.stats,.screen.game-entering>.hint,.screen.game-entering>.controls,.screen.game-entering>:is([role="grid"],.sboard,.cwrap,.mgrid,.color-sort-board,.hanoi-board,.twogrid,.gamegrid,.wsgrid,.sudoku,.kenken-board,.nonogram-board,.unblock-board,.mm-board,.peg-board,.pipe-board,.queen-board,.futo-board,.sl-board,.hitori-board,.bridges-board){animation:none!important}}
 #splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 50% 35%,#27375a 0%,#111a2d 52%,#080c16 100%);color:#f7f9ff;transition:opacity .35s ease,visibility .35s ease}
 #splash.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
 .splash-content{display:grid;justify-items:center;text-align:center;gap:13px;animation:splash-rise .65s cubic-bezier(.2,.8,.2,1) both}
@@ -841,6 +852,7 @@ function pickPhoto(cb){
 function show(id){
   accountPlaytime();active=id;trackedGame=screenGameKey(id);trackedAt=trackedGame?Date.now():0;
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+  const opened=$(id);if(opened){opened.classList.remove('game-entering');if(id!=='menu')requestAnimationFrame(()=>{opened.classList.add('game-entering');setTimeout(()=>opened.classList.remove('game-entering'),650);});}
   if(id==='menu'){updateResumePanel();const grid=$('menu').querySelector('.cards');if(!grid.dataset.entered){grid.dataset.entered='true';grid.querySelectorAll('.gcard').forEach((card,i)=>card.style.setProperty('--card-delay',Math.min(i,7)*18+'ms'));grid.classList.add('cards-enter');}}
   window.scrollTo(0,0);
 }
