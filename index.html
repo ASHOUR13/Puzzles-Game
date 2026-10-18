@@ -380,6 +380,23 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 .btn{min-height:44px;border-width:1.5px;font-weight:750}
 .btn.on{font-weight:900}
 @media(max-width:620px){.hero-panel{min-height:220px;padding:24px 18px;border-width:1.5px}.hero-art{opacity:.62;inset-inline-end:-50px}.gcard{min-height:112px;padding:14px 13px 14px 19px}.gcard .ic{width:50px;height:50px;flex-basis:50px}.gcard b{font-size:16px}.gcard small{font-size:12px}.cardmeta{font-size:11px}}
+.feedback-status{flex:1 0 100%;margin:0;color:var(--muted);font-size:12px;text-align:center}
+/* Playful motion: short, responsive, and tied to real interactions */
+@keyframes cardEnter{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.cards.cards-enter .gcard:not([hidden]){animation:cardEnter .38s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--card-delay,0ms)}
+@keyframes orbitFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(4deg)}}
+.hero-piece-two{animation:orbitFloat 3.6s ease-in-out infinite}
+@keyframes dailyGlow{0%,100%{box-shadow:0 8px 24px #f0b63038}50%{box-shadow:0 9px 30px #f0b63075,0 0 0 5px color-mix(in srgb,var(--yellow) 10%,transparent)}}
+.daily-card .btn{animation:dailyGlow 3s ease-in-out infinite}
+.gcard:active .ic{transform:scale(.9) rotate(-7deg)}
+.btn:active:not(:disabled){transform:scale(.96);transition-duration:.08s}
+.screen.active:not(#menu){animation:screenArrive .28s cubic-bezier(.2,.7,.25,1) both}
+.box{position:relative;overflow:hidden;animation:modalPop .26s cubic-bezier(.18,.85,.3,1.2) both}
+@keyframes modalPop{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+.confetti-layer{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none}
+.confetti-bit{position:absolute;top:-12px;width:9px;height:13px;border-radius:3px;opacity:0;box-shadow:0 2px 5px #0003;animation:confettiDrop 1.1s cubic-bezier(.18,.7,.28,1) both}
+@keyframes confettiDrop{0%{opacity:0;transform:translate3d(0,-4px,0) rotate(0) scale(.6)}12%{opacity:1}75%{opacity:1}100%{opacity:0;transform:translate3d(var(--drift),155px,0) rotate(620deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){.cards.cards-enter .gcard:not([hidden]),.hero-piece-two,.daily-card .btn,.box{animation:none!important}.screen.active:not(#menu){animation:none!important}}
 </style>
 </head>
 <body>
@@ -440,6 +457,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
     <label><span>Language</span><select id="langSelect" aria-label="Language"><option value="en">English</option><option value="ar">العربية</option></select></label>
     <label><span>Theme</span><select id="themeSelect" aria-label="Theme"><option value="midnight">Midnight</option><option value="light">Light</option><option value="ocean">Ocean</option></select></label>
     <button id="soundToggle" class="btn">🔊 Sound on</button><button id="vibeToggle" class="btn">📳 Vibration on</button>
+    <span id="vibeStatus" class="feedback-status" aria-live="polite"></span>
     <span id="totalStars" class="achievement">⭐ 0</span>
   </div>
   <p class="hint">Free, no ads.</p>
@@ -638,6 +656,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 <div id="hitori" class="screen"><div class="top"><button class="btn back">← Menu</button><h2>◼️ Hitori</h2></div><div class="stats"><span id="hitoriLevel">Level 1</span><span id="hitoriMistakes">Mistakes: 0</span><span id="hitoriStars" class="starline">☆☆☆</span></div><div id="hitoriLevels" class="levelrow"></div><p class="hint">Shade duplicates so each row and column has unique numbers. Shaded cells cannot touch, and the remaining cells stay connected.</p><div id="hitoriBoard" class="hitori-board" role="grid" aria-label="Hitori puzzle"></div><div class="controls"><button id="hitoriHint" class="btn">Hint</button><button id="hitoriCheck" class="btn on">Check puzzle</button><button id="hitoriRestart" class="btn">New puzzle</button></div><p id="hitoriMessage" class="hint" role="status" aria-live="polite"></p></div>
 <div id="bridges" class="screen"><div class="top"><button class="btn back">← Menu</button><h2>🌉 Bridges</h2></div><div class="stats"><span id="bridgesLevel">Level 1</span><span id="bridgesCount">Bridges: 0</span><span id="bridgesStars" class="starline">☆☆☆</span></div><div id="bridgesLevels" class="levelrow"></div><p class="hint">Connect every island. Its number is the total bridges that must touch it. A gap can hold one or two bridges.</p><div id="bridgesBoard" class="bridges-board" role="grid" aria-label="Bridges puzzle"></div><div class="controls"><button id="bridgesHint" class="btn">Hint</button><button id="bridgesClear" class="btn">Clear bridges</button><button id="bridgesCheck" class="btn on">Check network</button><button id="bridgesRestart" class="btn">New puzzle</button></div><p id="bridgesMessage" class="hint" role="status" aria-live="polite"></p></div>
 <div id="modal" class="modal"><div class="box">
+  <div id="winConfetti" class="confetti-layer" aria-hidden="true"></div>
   <h2 id="mTitle"></h2><p id="mText"></p>
   <button id="mAgain" class="btn on">Play again</button><button id="mMenu" class="btn">Menu</button>
 </div></div>
@@ -661,7 +680,7 @@ const SOLO_LEVEL_RANGES={num:[[1,7],[8,14],[15,30]],photo:[[1,5],[6,15],[16,30]]
 const app={photo:null,photoUrl:null};
 const TXT={
   'A little challenge, every day':'تحدٍّ صغير كل يوم','Puzzle Studio':'استوديو الألغاز','Think, play, and find your next favorite.':'فكّر والعب واكتشف لعبتك المفضلة.','Search games':'ابحث عن لعبة','All games':'كل الألعاب','Solo':'فردي','Two players':'لاعبان','Showing {n} games':'عرض {n} لعبة','Two-player games · same device':'ألعاب لاعبين على نفس الجهاز','More logic puzzles':'مزيد من ألغاز المنطق','Number Puzzle':'لغز الأرقام','Slide the numbers into order':'رتّب الأرقام بالسحب','Photo Puzzle':'لغز الصور','Rebuild a picture, one move at a time':'أعد ترتيب الصورة خطوة بخطوة','Memory Match':'لعبة الذاكرة','Memory Game':'لعبة الذاكرة','Find every matching pair':'اعثر على كل زوج متطابق','Jigsaw':'أحجية الصور المقطعة','Drag pieces together to reveal the picture':'ركّب القطع لتكتمل الصورة','2048':'٢٠٤٨','Merge tiles and reach the golden tile':'ادمج المربعات للوصول إلى الرقم الذهبي','Lights Out':'أطفئ الأضواء','Switch off every light':'أطفئ جميع الأضواء','Word Search':'البحث عن الكلمات','Find every hidden word':'اعثر على كل الكلمات المخفية','Sudoku':'سودوكو','Fill the grid without repeats':'أكمل الشبكة دون تكرار الأرقام',
-  'Language':'اللغة','Theme':'السمة','Midnight':'ليلي','Light':'فاتح','Ocean':'محيط','Sound on':'الصوت يعمل','Sound off':'الصوت متوقف','Vibration on':'الاهتزاز يعمل','Vibration off':'الاهتزاز متوقف','Free, no ads.':'مجاني بلا إعلانات.','Play offline after the first load. Add to your home screen from your browser menu.':'العب دون اتصال بعد التحميل الأول. أضف التطبيق إلى الشاشة الرئيسية من قائمة المتصفح.','Privacy':'الخصوصية','← Menu':'← القائمة','Your puzzles stay on your device':'ألغازك تبقى على جهازك','This build does not require an account and does not include ads, analytics, or tracking SDKs. Game progress, stars, preferences, and scores are stored locally on this device.':'لا يحتاج هذا الإصدار إلى حساب ولا يتضمن إعلانات أو تحليلات أو أدوات تتبع. يُحفظ التقدم والنجوم والتفضيلات والنتائج على هذا الجهاز.','If you choose a photo, Puzzle Studio processes it locally for the puzzle. It is not uploaded or shared by the app.':'إذا اخترت صورة، يعالجها التطبيق على جهازك للغز فقط ولا يرفعها أو يشاركها.','Clearing app storage removes saved scores. The app does not send personal data to a server.':'يؤدي مسح بيانات التطبيق إلى حذف النتائج المحفوظة. لا يرسل التطبيق بيانات شخصية إلى خادم.','For questions, contact the developer through the support contact shown on the app\'s Google Play listing.':'للاستفسارات، تواصل مع المطور عبر بيانات الدعم في صفحة التطبيق على Google Play.','Effective October 14, 2026.':'ساري اعتبارًا من ١٤ أكتوبر ٢٠٢٦.',
+  'Language':'اللغة','Theme':'السمة','Midnight':'ليلي','Light':'فاتح','Ocean':'محيط','Sound on':'الصوت يعمل','Sound off':'الصوت متوقف','Vibration on':'الاهتزاز يعمل','Vibration off':'الاهتزاز متوقف','Vibration is not supported on this device':'الاهتزاز غير مدعوم على هذا الجهاز','Vibration test sent':'تم إرسال اختبار الاهتزاز','Tap vibration to test':'اضغط زر الاهتزاز للتجربة','Free, no ads.':'مجاني بلا إعلانات.','Play offline after the first load. Add to your home screen from your browser menu.':'العب دون اتصال بعد التحميل الأول. أضف التطبيق إلى الشاشة الرئيسية من قائمة المتصفح.','Privacy':'الخصوصية','← Menu':'← القائمة','Your puzzles stay on your device':'ألغازك تبقى على جهازك','This build does not require an account and does not include ads, analytics, or tracking SDKs. Game progress, stars, preferences, and scores are stored locally on this device.':'لا يحتاج هذا الإصدار إلى حساب ولا يتضمن إعلانات أو تحليلات أو أدوات تتبع. يُحفظ التقدم والنجوم والتفضيلات والنتائج على هذا الجهاز.','If you choose a photo, Puzzle Studio processes it locally for the puzzle. It is not uploaded or shared by the app.':'إذا اخترت صورة، يعالجها التطبيق على جهازك للغز فقط ولا يرفعها أو يشاركها.','Clearing app storage removes saved scores. The app does not send personal data to a server.':'يؤدي مسح بيانات التطبيق إلى حذف النتائج المحفوظة. لا يرسل التطبيق بيانات شخصية إلى خادم.','For questions, contact the developer through the support contact shown on the app\'s Google Play listing.':'للاستفسارات، تواصل مع المطور عبر بيانات الدعم في صفحة التطبيق على Google Play.','Effective October 14, 2026.':'ساري اعتبارًا من ١٤ أكتوبر ٢٠٢٦.',
   'Choose a game':'اختر لعبة','Logic':'منطق','Memory':'ذاكرة','Spatial':'إدراك مكاني','Numbers':'أرقام','Words':'كلمات','Classic':'كلاسيكي','3–5 grid':'شبكة ٣–٥','Use your photo':'استخدم صورتك','4 levels':'٤ مستويات','3–6 pieces':'٣–٦ قطع','12 levels':'١٢ مستوى','Restart':'إعادة','Restart level':'إعادة المستوى','New puzzle':'لغز جديد','New game':'لعبة جديدة','Next level':'المستوى التالي','Hint':'تلميح','Undo':'تراجع','Guide':'دليل','Hold to Peek':'اضغط مطولًا للمعاينة','Numbers':'أرقام','Shuffle':'خلط','📷 Choose Photo':'📷 اختر صورة','Play again':'العب مجددًا','Menu':'القائمة','Easy':'سهل','Medium':'متوسط','Hard':'صعب','Expert':'خبير',
   'Join matching tiles. Swipe, tap the arrows, or use your keyboard.':'ادمج المربعات المتطابقة. اسحب أو اضغط الأسهم أو استخدم لوحة المفاتيح.','Your best score stays on this device.':'أفضل نتيجة محفوظة على هذا الجهاز.','Tap a light to toggle it and its neighbors. Turn them all off.':'اضغط ضوءًا لتبديله وتبديل جيرانه. أطفئها جميعًا.','Select the first and last letter of a word in a straight line.':'حدّد الحرف الأول والأخير للكلمة على خط مستقيم.','Select a cell, then tap a number. Fill each row, column, and 3×3 box without repeats.':'اختر خلية ثم اضغط رقمًا. أكمل كل صف وعمود ومربع ٣×٣ دون تكرار.','No more moves':'لا توجد حركات أخرى','Picture complete! 🎉':'اكتملت الصورة! 🎉','All pairs found! 🎉':'عُثر على كل الأزواج! 🎉','Puzzle solved! 🎉':'تم حل اللغز! 🎉','You reached 2048! 🎉':'وصلت إلى ٢٠٤٨! 🎉','Level complete! ⭐':'اكتمل المستوى! ⭐','All words found! ⭐':'عُثر على جميع الكلمات! ⭐','Sudoku solved! ⭐':'تم حل السودوكو! ⭐','Level':'المستوى','Moves':'الحركات','Time':'الوقت','Score':'النتيجة','Best':'الأفضل','Found':'تم العثور','Mistakes':'الأخطاء','Placed':'تم وضع','Select a cell, then choose a number.':'اختر خلية ثم اختر رقمًا.','Tap a number to fill the selected cell.':'اضغط رقمًا لملء الخلية المحددة.','Clear':'مسح','Completed':'مكتمل','Locked':'مقفل','⭐':'⭐','Moves: {n}':'الحركات: {n}','Score: {n}':'النتيجة: {n}','Best: {n}':'الأفضل: {n}','Time: {n}s':'الوقت: {n}ث','Found: {n}':'تم العثور: {n}','Mistakes: {n}':'الأخطاء: {n}','Placed: {n}':'تم وضع: {n}',
   'KenKen':'كين كين','Nonogram':'نونوجرام','Minesweeper':'كانسة الألغام','How to play':'طريقة اللعب','Close':'إغلاق','Help':'مساعدة','Use arithmetic to solve the cages':'استخدم العمليات الحسابية لحل المجموعات','Reveal a picture from number clues':'اكشف صورة باستخدام أدلة الأرقام','Use clues to find the safe squares':'استخدم الأدلة للعثور على المربعات الآمنة','3 difficulties':'٣ مستويات صعوبة','Flag mode: off':'وضع الأعلام: متوقف','Flag mode: on':'وضع الأعلام: يعمل','Use the number clues to reveal the hidden picture.':'استخدم أدلة الأرقام لكشف الصورة المخفية.','Reveal safe cells; numbers tell you how many mines touch them.':'اكشف المربعات الآمنة؛ الأرقام تخبرك بعدد الألغام المجاورة.','Mines: {n}':'الألغام: {n}','Mine hit!':'انفجر لغم!','Board cleared! 🎉':'تم تنظيف اللوحة! 🎉','Find all the mines to win.':'اعثر على كل الألغام للفوز.','30 levels':'٣٠ مستوى','Mistakes: {n}':'الأخطاء: {n}'
@@ -705,7 +724,9 @@ function applyLanguage(){const lang=STORE.settings.lang;const walker=document.cr
 function applyTheme(theme){STORE.settings.theme=theme;document.documentElement.dataset.theme=theme==='midnight'?'':theme;persist();}
 const SFX={context:null,master:null};
 function playSfx(kind){try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;const c=SFX.context||(SFX.context=new Audio());if(!SFX.master){SFX.master=c.createGain();SFX.master.gain.value=.55;SFX.master.connect(c.destination);}if(c.state==='suspended')c.resume().catch(()=>{});const patterns={tap:[[520,0,.045,.024,'sine']],select:[[740,0,.065,.032,'sine']],move:[[420,0,.065,.034,'triangle'],[620,.024,.07,.014,'sine']],success:[[587,0,.08,.03,'sine'],[784,.045,.11,.026,'sine']],error:[[220,0,.11,.034,'triangle'],[164,.045,.12,.02,'triangle']],win:[[523,0,.19,.042,'sine'],[659,.075,.2,.038,'sine'],[784,.15,.22,.035,'sine'],[1046,.23,.28,.031,'sine'],[1318,.33,.34,.026,'sine']]};const now=c.currentTime+.012;(patterns[kind]||patterns.tap).forEach(([hz,delay,duration,volume,wave])=>{const o=c.createOscillator(),g=c.createGain(),at=now+delay;o.type=wave;o.frequency.setValueAtTime(hz,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(volume,at+.009);g.gain.exponentialRampToValueAtTime(.0001,at+duration);o.connect(g);g.connect(SFX.master);o.start(at);o.stop(at+duration+.015);});}catch(e){}}
-function feedback(kind='tap'){if(STORE.settings.vibration&&navigator.vibrate)try{navigator.vibrate(kind==='win'?[30,35,65]:kind==='error'?28:kind==='move'?12:kind==='select'?9:7);}catch(e){}if(STORE.settings.sound)playSfx(kind);}
+function vibrationAvailable(){return typeof navigator!=='undefined'&&typeof navigator.vibrate==='function';}
+function vibrate(kind='tap'){if(!STORE.settings.vibration||!vibrationAvailable())return false;const patterns={tap:24,select:32,move:28,error:[70,35,100],success:[45,35,75],win:[55,45,90,45,140],test:180};try{return navigator.vibrate(patterns[kind]??patterns.tap)!==false;}catch(e){return false;}}
+function feedback(kind='tap'){vibrate(kind);if(STORE.settings.sound)playSfx(kind);}
 function saveRun(game,obj){STORE.runs[game]=obj;persist();}
 function savedRun(game){return STORE.runs[game]||null;}
 function levelButtons(el,game,count,current,fn){el.innerHTML='';let open=1;while(open<count&&scoreStars(game+':'+open)>0)open++;for(let i=1;i<=count;i++){const b=document.createElement('button');b.className='btn'+(i===current?' on':'');const diff=['Easy','Medium','Hard','Expert'][Math.min(3,Math.floor((i-1)/6))];const label=game==='sudoku'?t('Level')+' '+i+' · '+t(diff):game==='minesweeper'?t('Level')+' '+i:i;b.textContent=label+(scoreStars(game+':'+i)?' ★':'');b.disabled=i>open;b.onclick=()=>{STORE.levels[game]=i;persist();fn(i);};el.appendChild(b);}}
@@ -759,12 +780,14 @@ function pickPhoto(cb){
 function show(id){
   active=id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+  if(id==='menu'){const grid=$('menu').querySelector('.cards');grid.classList.remove('cards-enter');grid.querySelectorAll('.gcard').forEach((card,i)=>card.style.setProperty('--card-delay',Math.min(i,18)*24+'ms'));void grid.offsetWidth;grid.classList.add('cards-enter');}
   window.scrollTo(0,0);
 }
 function toMenu(){
   if(history.state&&history.state.g)history.back();else show('menu');
 }
 window.addEventListener('popstate',()=>{$('difficultyModal').classList.remove('show');pendingSoloGame=null;hideModal();show('menu');});
+function celebrateWin(){const layer=$('winConfetti');layer.replaceChildren();const palette=['var(--accent)','var(--blue)','var(--green)','var(--yellow)','#ff668c'];for(let i=0;i<24;i++){const bit=document.createElement('i');bit.className='confetti-bit';bit.style.left=(4+Math.random()*92)+'%';bit.style.background=palette[i%palette.length];bit.style.setProperty('--drift',Math.round(Math.random()*110-55)+'px');bit.style.animationDelay=(Math.random()*.2)+'s';bit.style.animationDuration=(.95+Math.random()*.45)+'s';layer.appendChild(bit);}setTimeout(()=>layer.replaceChildren(),1700);}
 function showModal(title,text,again){
   const wins=['Puzzle solved! 🎉','All pairs found! 🎉','Picture complete! 🎉','Level complete! ⭐','All words found! ⭐','Sudoku solved! ⭐','Board cleared! 🎉','Code cracked! 🎉','Futoshiki solved! ⭐','Loop completed! ⭐','Hitori solved! ⭐','Bridges solved! ⭐'];
   const gameByScreen={num:'num',photo:'photo',mem:'mem',jig:'jig',game2048:'2048',lights:'lights',words:'words',sudoku:'sudoku',kenken:'kenken',nonogram:'nonogram',minesweeper:'minesweeper',colorsort:'colorsort',hanoi:'hanoi',mastermind:'mastermind',pegsolitaire:'pegsolitaire',pipes:'pipes',queens:'queens',unblock:'unblock',futoshiki:'futoshiki',slitherlink:'slitherlink',hitori:'hitori',bridges:'bridges'};
@@ -774,9 +797,9 @@ function showModal(title,text,again){
   if(won&&game&&!soloWin){const next=Number(STORE.levels[game]||1);text+='\n'+(next>30?t('All 30 levels complete!'):t('Next level: {n}',next));$('mAgain').textContent=next>30?t('Done'):t('Continue');}else $('mAgain').textContent=soloWin?t('New puzzle'):t('Play again');
   $('mText').textContent=text;
   $('modal').classList.add('show');
+  if(won)celebrateWin();else $('winConfetti').replaceChildren();
   $('mAgain').onclick=()=>{hideModal();if(soloWin)startSoloGame(game,SOLO_DIFFICULTY[game]||'easy',false);else again();};
   $('mMenu').onclick=()=>{hideModal();toMenu();};
-  try{navigator.vibrate&&navigator.vibrate(150);}catch(e){}
 }
 function hideModal(){$('modal').classList.remove('show');}
 const HELP={
@@ -1559,14 +1582,14 @@ function refreshLabels(){
   if(N.solution.length)nonoDraw();
   if(MS.counts.length)msDraw();if(FU.solution.length)futoDraw();if(SL.clues.length)slDraw();if(HI.values.length)hitoriDraw();if(BR.degree.length)bridgesDraw();
   if(CS.tubes.length)csDraw();if(H.towers.length)hanoiDraw();if(MM.secret.length)mmDraw();if(P.board.length)pegDraw();if(Q.pieces.length)pipeDraw();if(QR.board.length)queensDraw();if(UB.pieces.length)unblockDraw();if(active==='daily'&&DAILY.solution.length)dailyDraw();
-  $('soundToggle').textContent='🔊 '+t(STORE.settings.sound?'Sound on':'Sound off');$('vibeToggle').textContent='📳 '+t(STORE.settings.vibration?'Vibration on':'Vibration off');updateProgress();dailyUI();
+  $('soundToggle').textContent='🔊 '+t(STORE.settings.sound?'Sound on':'Sound off');$('vibeToggle').textContent='📳 '+t(STORE.settings.vibration?'Vibration on':'Vibration off');$('vibeStatus').textContent=vibrationAvailable()?t('Tap vibration to test') :t('Vibration is not supported on this device');updateProgress();dailyUI();
 }
 function setLanguage(lang){STORE.settings.lang=lang;persist();document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.title=t('Puzzle Studio')+' — Brain Games';applyLanguage();refreshLabels();}
 $('langSelect').value=STORE.settings.lang;$('themeSelect').value=STORE.settings.theme;applyTheme(STORE.settings.theme);document.documentElement.lang=STORE.settings.lang;document.documentElement.dir=STORE.settings.lang==='ar'?'rtl':'ltr';document.title=t('Puzzle Studio')+' — Brain Games';applyLanguage();refreshLabels();
 $('langSelect').onchange=e=>setLanguage(e.target.value);
 $('themeSelect').onchange=e=>applyTheme(e.target.value);
 $('soundToggle').onclick=()=>{STORE.settings.sound=!STORE.settings.sound;persist();refreshLabels();feedback();};
-$('vibeToggle').onclick=()=>{STORE.settings.vibration=!STORE.settings.vibration;persist();refreshLabels();feedback();};
+$('vibeToggle').onclick=()=>{STORE.settings.vibration=!STORE.settings.vibration;persist();if(STORE.settings.vibration){const sent=vibrate('test');refreshLabels();$('vibeStatus').textContent=sent?t('Vibration test sent'):t('Vibration is not supported on this device');}else{if(vibrationAvailable())navigator.vibrate(0);refreshLabels();}};
 
 function openDifficulty(g){
   pendingSoloGame=g;
@@ -1640,6 +1663,7 @@ function filterGames(){if(!gameSearch)return;const query=gameSearch.value.trim()
 gameSearch?.addEventListener('input',filterGames);
 gameFilterButtons.forEach(button=>button.addEventListener('click',()=>{gameFilterButtons.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});filterGames();}));
 filterGames();
+show('menu');
 document.querySelectorAll('.back').forEach(b=>b.onclick=toMenu);
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if($('difficultyModal').classList.contains('show')){$('difficultyModal').classList.remove('show');pendingSoloGame=null;return;}if($('helpModal').classList.contains('show')){closeHelp();return;}if($('modal').classList.contains('show')){hideModal();return;}toMenu();return;}
