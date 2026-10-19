@@ -403,7 +403,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 .hero-pill{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:6px 11px;border:1px solid color-mix(in srgb,var(--blue) 42%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--blue) 17%,var(--panel));color:var(--text);font-family:inherit;font-size:12px;line-height:1.2;font-weight:750;box-shadow:inset 0 1px #ffffff20;cursor:default}
 .hero-pill b{font-size:14px;color:var(--blue)}
 .quest-pill{border-color:color-mix(in srgb,var(--yellow) 60%,var(--line));background:color-mix(in srgb,var(--yellow) 17%,var(--panel))}
-.hero-journey{width:min(100%,350px);margin:14px 0 0;padding:9px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--bg) 58%,transparent);box-shadow:inset 0 1px #ffffff12;margin-inline-start:72px}
+.hero-journey{display:block;width:min(100%,350px);margin:14px 0 0;padding:9px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--bg) 58%,transparent);box-shadow:inset 0 1px #ffffff12;margin-inline-start:72px;text-align:start;color:var(--text);font:inherit;cursor:pointer;appearance:none;-webkit-appearance:none}
 .journey-label{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:750}
 .journey-label strong{margin-inline-start:auto;color:var(--yellow);font-size:15px}
 .journey-label small{color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
@@ -414,7 +414,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 .achievement{display:inline-flex;align-items:center;min-height:23px;padding:2px 7px;border:1px solid color-mix(in srgb,var(--yellow) 32%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--yellow) 12%,var(--panel));font-size:11px;font-weight:800}
 .hero-highlights .hero-pill,.hero-journey{transition:transform .2s,border-color .2s,box-shadow .2s}
 .hero-highlights button.hero-pill{cursor:pointer}
-.hero-highlights .hero-pill:hover,.hero-journey:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 18%,transparent)}
+.hero-highlights .hero-pill:hover,.hero-journey:hover,.hero-journey:focus-visible{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 18%,transparent)}
 @media(max-width:620px){.hero-highlights,.hero-journey{margin-inline-start:0}.hero-highlights{margin-top:14px;gap:7px}.hero-pill{min-height:32px;padding:5px 9px;font-size:11px}.hero-journey{width:min(100%,330px);margin-top:10px}.journey-label strong{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.star-pop{animation:none!important}.star-track span{transition:none!important}}
 /* Keep the large game library smooth on mobile and avoid re-animating it on return. */
@@ -475,7 +475,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
   <h1><span class="brand">🧩</span>Puzzle Studio</h1>
   <p class="sub">Think, play, and find your next favorite.</p>
   <div class="hero-highlights"><span class="hero-pill">🎲 <b id="heroGameCount">30</b> puzzles</span></div>
-  <div class="hero-journey"><div class="journey-label"><span>Stars collected</span><strong id="totalStars">⭐ 0</strong><small><span id="starProgressText">0 / 1980</span></small></div><div class="star-track"><span id="starProgress"></span></div></div>
+  <button id="starCollection" class="hero-journey" type="button" aria-label="Open game statistics"><span class="journey-label"><span>Stars collected</span><strong id="totalStars">⭐ 0</strong><small><span id="starProgressText">0 / 1980</span></small></span><span class="star-track"><span id="starProgress"></span></span></button>
     </div>
     <div class="hero-art" aria-hidden="true"><span class="hero-piece hero-piece-one">🧩</span><span class="hero-piece hero-piece-two">✦</span><span class="hero-piece hero-piece-three">◈</span><span class="hero-orbit"></span></div>
   </section>
@@ -1760,7 +1760,7 @@ $('difficultyCancel').onclick=()=>{$('difficultyModal').classList.remove('show')
 $('difficultyModal').addEventListener('click',e=>{if(e.target===$('difficultyModal')){$('difficultyModal').classList.remove('show');pendingSoloGame=null;}});
 document.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{const game=pendingSoloGame,difficulty=b.dataset.difficulty;pendingSoloGame=null;if(game)startSoloGame(game,difficulty);});
 dailyUI();
-$('dailyChallenge').onclick=dailyStart;$('continueGame').onclick=resumeLastGame;$('openStats').onclick=openStats;$('statsClose').onclick=()=>$('statsModal').classList.remove('show');$('statsModal').addEventListener('click',e=>{if(e.target===$('statsModal'))$('statsModal').classList.remove('show');});
+$('dailyChallenge').onclick=dailyStart;$('continueGame').onclick=resumeLastGame;$('openStats').onclick=openStats;$('starCollection').onclick=openStats;$('statsClose').onclick=()=>$('statsModal').classList.remove('show');$('statsModal').addEventListener('click',e=>{if(e.target===$('statsModal'))$('statsModal').classList.remove('show');});
 
 
 function showStepHint(){
