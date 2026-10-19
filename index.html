@@ -453,6 +453,16 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
 .stats-table thead{position:sticky;top:0;z-index:2;background:var(--panel2)}
 .stats-table-wrap::-webkit-scrollbar{width:8px;height:8px}.stats-table-wrap::-webkit-scrollbar-thumb{border-radius:99px;background:var(--blue)}
 @media(max-width:620px){.stats-box{width:min(96vw,780px);max-height:calc(100dvh - 32px);padding:16px}.stats-table-wrap{max-height:58dvh;min-height:180px}.stats-table th:first-child,.stats-table td:first-child{position:sticky;inset-inline-start:0;background:var(--panel);z-index:1}.stats-table thead th:first-child{z-index:3;background:var(--panel2)}}
+/* One-shot hover previews make each game card feel interactive before opening. */
+@keyframes cardIconPop{0%{transform:scale(1)}48%{transform:translateY(-5px) scale(1.16) rotate(-6deg)}100%{transform:scale(1)}}
+@keyframes cardIconFlip{0%{transform:rotateY(0) scale(1)}55%{transform:rotateY(180deg) scale(1.12)}100%{transform:rotateY(360deg) scale(1)}}
+@keyframes cardIconSlide{0%{transform:translateX(0)}35%{transform:translateX(-5px) rotate(-4deg)}70%{transform:translateX(4px) rotate(4deg)}100%{transform:translateX(0)}}
+@keyframes cardIconBounce{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-7px) scale(1.12)}70%{transform:translateY(1px) scale(.97)}}
+@keyframes cardIconSpin{0%{transform:rotate(0) scale(1)}55%{transform:rotate(18deg) scale(1.12)}100%{transform:rotate(0) scale(1)}}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){#menu .gcard{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}#menu .gcard:hover{transform:translateY(-4px);border-color:var(--card-accent,var(--blue))!important;box-shadow:0 10px 22px color-mix(in srgb,var(--card-accent,var(--blue)) 20%,transparent)!important}#menu .gcard:hover .ic{animation:cardIconPop .42s cubic-bezier(.2,.8,.25,1)}#menu .gcard[data-g="mem"]:hover .ic,#menu .gcard[data-g="mastermind"]:hover .ic{animation:cardIconFlip .55s cubic-bezier(.2,.8,.25,1)}#menu .gcard[data-g="num"]:hover .ic,#menu .gcard[data-g="photo"]:hover .ic,#menu .gcard[data-g="jig"]:hover .ic,#menu .gcard[data-g="unblock"]:hover .ic{animation:cardIconSlide .48s ease-out}#menu .gcard[data-g="2048"]:hover .ic,#menu .gcard[data-g="lights"]:hover .ic,#menu .gcard[data-g="queens"]:hover .ic{animation:cardIconBounce .48s cubic-bezier(.2,.8,.25,1)}#menu .gcard[data-g="colorsort"]:hover .ic,#menu .gcard[data-g="hanoi"]:hover .ic,#menu .gcard[data-g="pipes"]:hover .ic{animation:cardIconSpin .5s ease-out}}
+#menu .gcard:focus-visible .ic{animation:cardIconPop .42s cubic-bezier(.2,.8,.25,1)}
+@media(hover:none) and (prefers-reduced-motion:no-preference){#menu .gcard:active{transform:scale(.98)}#menu .gcard:active .ic{animation:cardIconPop .32s ease-out}}
+@media(prefers-reduced-motion:reduce){#menu .gcard:hover,#menu .gcard:active{transform:none!important}#menu .gcard:hover .ic,#menu .gcard:focus-visible .ic,#menu .gcard:active .ic{animation:none!important}}
 </style>
 </head>
 <body>
