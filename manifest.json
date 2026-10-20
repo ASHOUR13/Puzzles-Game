@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Puzzle Studio — Brain Games",
   "short_name": "Puzzle Studio",
-  "description": "A free collection of 29 puzzle games, including solo logic challenges and local two-player games, plus a separate daily puzzle.",
+  "description": "A free collection of 32 puzzle games, including solo logic challenges and local two-player games, plus a separate daily puzzle.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
