@@ -170,7 +170,7 @@ h1{text-align:center;font-size:clamp(34px,7vw,58px);letter-spacing:-.04em;margin
 #menu h1{margin:18px 0 8px;font-size:clamp(38px,7vw,64px);line-height:1.08}
 #menu .brand{width:56px;height:56px;border-radius:18px}
 #menu .sub{max-width:520px;margin:0 auto;line-height:1.6}
-.game-tools{position:sticky;top:8px;z-index:5;display:grid;grid-template-columns:minmax(220px,1fr) auto;align-items:center;gap:12px;max-width:1040px;margin:26px auto 12px;padding:10px;border:1px solid color-mix(in srgb,var(--line) 76%,transparent);border-radius:18px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(18px);box-shadow:0 12px 34px #0002}
+.game-tools{position:sticky;top:8px;z-index:5;display:flex;justify-content:center;align-items:center;max-width:1040px;margin:26px auto 12px;padding:10px;border:1px solid color-mix(in srgb,var(--line) 76%,transparent);border-radius:18px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(18px);box-shadow:0 12px 34px #0002}
 .game-search{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--muted)}
 .search-icon{font-size:27px;line-height:1;transform:rotate(-20deg)}
 .game-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:15px;user-select:text;-webkit-user-select:text}
@@ -206,7 +206,7 @@ h1{text-align:center;font-size:clamp(34px,7vw,58px);letter-spacing:-.04em;margin
 .btn:focus-visible,.gcard:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 ::selection{background:color-mix(in srgb,var(--blue) 45%,transparent);color:var(--text)}
 @media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));max-width:720px}.game-tools{max-width:720px}}
-@media(max-width:620px){#menu{padding:18px 14px 28px}#menu h1{margin:16px 0 7px}.game-tools{position:relative;top:auto;grid-template-columns:1fr;gap:8px;margin:20px auto 10px;padding:9px;border-radius:16px}.game-search{min-height:48px}.game-filters{display:grid;grid-template-columns:repeat(3,1fr)}.filter-chip{padding:8px 5px;font-size:12px}.cards{grid-template-columns:1fr;gap:10px;margin:12px auto 22px}.gcard{min-height:88px;padding:13px 14px;border-radius:16px}.gcard .ic{flex-basis:44px;width:44px;height:44px;border-radius:13px}.card-section{padding-top:15px}.daily-card{padding:15px}.settings{justify-content:stretch}.settings label{justify-content:space-between;flex:1 1 100%}.settings label select{min-width:130px}.screen:not(#menu) .top{top:env(safe-area-inset-top);gap:8px}.stats>span{padding:6px 9px;font-size:12px}}
+@media(max-width:620px){#menu{padding:18px 14px 28px}#menu h1{margin:16px 0 7px}.game-tools{position:relative;top:auto;margin:20px auto 10px;padding:8px;border-radius:16px}.game-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}.filter-chip{padding:8px 5px;font-size:12px}.cards{grid-template-columns:1fr;gap:10px;margin:12px auto 22px}.gcard{min-height:88px;padding:13px 14px;border-radius:16px}.gcard .ic{flex-basis:44px;width:44px;height:44px;border-radius:13px}.card-section{padding-top:15px}.daily-card{padding:15px}.settings{justify-content:stretch}.settings label{justify-content:space-between;flex:1 1 100%}.settings label select{min-width:130px}.screen:not(#menu) .top{top:env(safe-area-inset-top);gap:8px}.stats>span{padding:6px 9px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 <style>
@@ -519,8 +519,7 @@ html,body{background:radial-gradient(ellipse at 2% 0%,var(--glow),transparent 31
     <button id="settingsOpen" class="settings-gear" type="button" aria-label="Settings" title="Settings">⚙</button>
     <div class="hero-art" aria-hidden="true"><span class="hero-piece hero-piece-one">🧩</span><span class="hero-piece hero-piece-two">✦</span><span class="hero-piece hero-piece-three">◈</span><span class="hero-orbit"></span></div>
   </section>
-  <div class="game-tools" role="search">
-    <label class="game-search"><span class="search-icon" aria-hidden="true">⌕</span><input id="gameSearch" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off"></label>
+  <div class="game-tools">
     <div class="game-filters" role="group" aria-label="Filter games">
       <button class="filter-chip active" type="button" data-game-filter="all" aria-pressed="true">All games</button>
       <button class="filter-chip" type="button" data-game-filter="solo" aria-pressed="false">Solo</button>
@@ -2001,7 +2000,7 @@ ensureStepHintButtons();
 
 document.querySelectorAll('.gcard').forEach(b=>b.onclick=()=>launchGame(b.dataset.g));
 const gameSearch=$('gameSearch'),gameFilterButtons=[...document.querySelectorAll('[data-game-filter]')];
-function filterGames(){if(!gameSearch)return;const query=gameSearch.value.trim().toLocaleLowerCase();const mode=document.querySelector('[data-game-filter].active')?.dataset.gameFilter||'all';const cards=[...document.querySelectorAll('.gcard')];cards.forEach(card=>{const duel=!!card.querySelector('.duel-badge'),type=duel?'duel':'solo',matchesType=mode==='all'||mode===type,matchesText=!query||card.textContent.toLocaleLowerCase().includes(query);card.hidden=!(matchesType&&matchesText);});document.querySelectorAll('.card-section').forEach(section=>{const type=section.dataset.gameSection,hasVisible=cards.some(card=>!card.hidden&&((!!card.querySelector('.duel-badge')?'duel':'solo')===type));section.hidden=!hasVisible;});}
+function filterGames(){const mode=document.querySelector('[data-game-filter].active')?.dataset.gameFilter||'all';const cards=[...document.querySelectorAll('.gcard')];cards.forEach(card=>{const duel=!!card.querySelector('.duel-badge'),type=duel?'duel':'solo';card.hidden=!(mode==='all'||mode===type);});document.querySelectorAll('.card-section').forEach(section=>{const type=section.dataset.gameSection,hasVisible=cards.some(card=>!card.hidden&&((!!card.querySelector('.duel-badge')?'duel':'solo')===type));section.hidden=!hasVisible;});}
 gameSearch?.addEventListener('input',filterGames);
 gameFilterButtons.forEach(button=>button.addEventListener('click',()=>{gameFilterButtons.forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});filterGames();}));
 filterGames();
