@@ -1,0 +1,30 @@
+{
+  "id": "./",
+  "name": "Puzzle Studio — Brain Games",
+  "short_name": "Puzzle Studio",
+  "description": "A free collection of 32 puzzle games with daily quests, star rewards, unlockable themes, smart hints, and separate daily and weekly challenges.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090e1d",
+  "theme_color": "#090e1d",
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Puzzle Studio: Run web preview",
+      "type": "process",
+      "command": "python",
+      "args": ["-m", "http.server", "8000", "--directory", "www"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
