@@ -1,0 +1,6 @@
+{
+  "appId": "com.puzzlestudio.brainpuzzles",
+  "appName": "Puzzle Studio",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
